@@ -90,7 +90,7 @@ func main() {
 
 			data, err := json.Marshal(bt)
 			if err == nil {
-				fmt.Printf("%s: %s\n\n", time.Now().Format("2006-01-02 15:04:05"), data)
+				fmt.Printf("%s: InfoHash: %s, Name: \n\n", time.Now().Format("2006-01-02 15:04:05"), bt.InfoHash, bt.Name)
 				// f, ferr := os.Create("torrent/" + bt.Name + "-" + bt.InfoHash + ".json")
 				// if ferr == nil {
 				// 	f.Write(data)
