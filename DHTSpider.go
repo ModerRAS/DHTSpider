@@ -17,16 +17,10 @@ import (
 	"golang.org/x/text/encoding/ianaindex"
 )
 
-type file struct {
-	Path   []interface{} `json:"path"`
-	Length int           `json:"length"`
-}
-
 type bitTorrent struct {
 	InfoHash          string `json:"infohash"`
 	Name              string `json:"name"`
-	Files             []file `json:"files,omitempty"`
-	Length            int    `json:"length,omitempty"`
+	Length            int64  `json:"length,omitempty"`
 	RawMetaDataBase64 string `json:"rawmetadatabase64,omitempty"`
 	GetDateTime       int64  `json:"getdatetime,omitempty"`
 }
@@ -71,21 +65,19 @@ func main() {
 
 			if v, ok := info["files"]; ok {
 				files := v.([]interface{})
-				bt.Files = make([]file, len(files))
-
-				for i, item := range files {
+				var length int64
+				length = 0
+				for _, item := range files {
 					f := item.(map[string]interface{})
 					// var paths []string = make([]string, len(f["path"].([]interface{})))
 					// for j, jitem := range f["path"].([]interface{}) {
 					// 	paths[j] = ConvertToUTF8(jitem.([]byte))
 					// }
-					bt.Files[i] = file{
-						Path:   f["path"].([]interface{}),
-						Length: f["length"].(int),
-					}
+					length += f["length"].(int64)
 				}
+				bt.Length = length
 			} else if _, ok := info["length"]; ok {
-				bt.Length = info["length"].(int)
+				bt.Length = info["length"].(int64)
 			}
 
 			data, err := json.Marshal(bt)
